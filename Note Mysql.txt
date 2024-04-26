@@ -1,0 +1,1588 @@
+create database if not exists comex  default character set utf8mb4 default collate utf8mb4_general_ci;
+use comex;
+
+AQUI CRIA O DATA BD, SE NÃO EXISTIR ELE E COM AS CARACTERES DA LINGUAGEM LATINA 
+default encryption = {'Y',|'N'} -> se banco vai ser cripitografado ou não 
+
+
+default character set utf8mb4 default collate utf8mb4_general_ci-> para mostra qual vai ser caracteres que vai ser aceito no seu banco
+etc
+
+use comex -> para vc avisar que ta usando tal banco de dados
+-----------------------------------------------------------------------------------------------------------------------
+
+Drop database if exists comex;
+
+AQUI PARA EXCLUIR BANCO DE DADOS SE ELE EXISTIR  ESSE COMANDO
+
+---------------------------------------------------------------------------------------------------------------------
+SELECT * FROM tbcomex;
+AQUI SELECIONA UMA DAS TABELA COMEX E LISTA AS INFOS SALVA NELA
+--------------------------------------------------------------------------------------------------------------------
+TIPO DE DADOS                             
+inteiro: 
+TINYINT
+SMALLINT
+MEDIUMINT
+INT E BIGINT
+DECIMAL: 
+FLOAT 
+DOUBLE(5,2)=999,99-> 5 NUMERO NO TOTAL, E COM DECIMAL DE SO 2 DIGITOS
+INT(4)-> 5 = 0005
+AUTO_INCREMENT-> VAI INCREMENTANDO AS COISAS SOZINHA
+
+
+DATA e HORA, 
+DATE armazena um dia, no formato ano, mês e dia com traços entre eles, vai dia 1000-01-01 até 9999-12-31.
+DATETIME, guarda data e hora. A hora é importante principalmente quando tempos campos do tipo LOG
+TIMESTAMP é bem semelhante ao o DATETIME, contudo possui duas características principais: tem um range menor, que vai de 1970-01-01 a 2038-01-19
+TIME armazena somente o horário e tem um range, de -838:59:59 a 839:59:59
+YEAR é guardado somente o ano de 1901 a 2155
+
+
+String 
+CHAR
+Varchar
+TINYBLOB, BLOB, MEDIUMBLOB e LONGBLOB e no TEXT também, temos o TINYTEXT, TEXT, MEDIUMTEXT e LONGTEXT. 
+
+Size ENUM ('x-small', 'small', 'médium', 'large', 'x-large')
+
+------------------------------------------------------------------------------------------------------------------------
+CRIANDO UM  TABELA 
+
+CREATE TABLE if not exists tbcliente
+( CPF VARCHAR (11) ,
+NOME VARCHAR (100) ,
+ENDERECO1 VARCHAR (150) ,
+ENDERECO2 VARCHAR (150) ,
+BAIRRO VARCHAR (50) ,
+CIDADE VARCHAR (50) ,
+ESTADO VARCHAR (2) ,
+CEP VARCHAR (8) ,
+IDADE SMALLINT,
+SEXO VARCHAR (1) ,
+LIMITE_CREDITO FLOAT ,
+VOLUME_COMPRA FLOAT ,
+PRIMEIRA_COMPRA BIT (1),
+primary key(idcurso)
+ )default charset=utf8mb4;
+
+
+PARA CRIAR UMA TABELA SO USA CREATE TABLE E NOME DA TABELA, O IF NOT EXISTS CASO A TABELA NÃO EXISTA
+
+
+default charset=utf8mb4;-> para dizer que esse banco aceita esse tal caractres 
+
+TROCA NOME DE UMA COLUNA DA TABELA
+ALTER TABLE NOMEDATABELA RENAME COLUMN NOMDACOLUNAERRADA TO COLUNACERTA
+
+ADD COISA NOVA NA TABELA 
+CHAVE ESTRAGEIRA
+
+ALTER TABLE NOMEDATABELA ADD CONSTRAINT FK_CLIENTE FOREIGN KEY(CPF) REFERENCES CLIENTE (CPF)
+
+CRIANDO UMA TABELA JA COM FOREIGN KEY 
+
+create table venda(
+id int not null auto_increment,
+data date,
+cpfvendedor int ,
+cpfcliente int,
+primary key(id),
+foreign key(cpfvendedor) references funcionarios(cpf),
+foreign key(cpfcliente) references cliente(cpf)
+)default charset= utf8mb4;
+
+ALTERANDO NOME DA TABELA 
+ALTER TABLE NOMEDATABELA RENAME NOMEDANOVATABELA
+
+
+CREANDO UMA TABELA COM PRIMARY KEY COMPOSTO
+create table venda(
+id int not null,
+id2 int not null,
+primary key(id,id2),
+
+)default charset= utf8mb4;
+
+===============================================================================================================================
+CREANDO UMA TABELA COM PRIMARY KEY COMPOSTO
+create table venda(
+id int not null,
+nome default 'RICARDO',
+primary key(id),
+
+)default charset= utf8mb4;
+SEMPRE QUE VC NÃO DIZER COMO OU TIPO QUE ESTA CRIANDO O DEFALTE DEFAULT SERA NOME = RICARDO
+--------------------------------------------------------------------------------------------------------------------------------
+PARA DELETAR TABELA 
+
+DROP TABLE IF EXIXTS TBCLIENT;
+
+DELETA UMA TABELA SE ELA EXISTIR
+----------------------------------------------------------------------------------------------------------------------------------
+PARA ADD COISA DENTRO DA TABELA 
+
+INSERT INTO tbproduto (
+PRODUTO, 
+NOME, 
+EMBALAGEM, 
+TAMANHO, 
+SABOR, 
+PRECO_LISTA) VALUES (
+'1040107', 'Light - 350 ml - Melancia', 'Lata', '350 ml', 'Melancia', 4.56);
+
+
+
+
+INSERT INTO tbproduto -> AQUI PARA VC ADD COISA NA TABELA E VC TEM COLOCAR ISSO 
+INSERT INTO E NOME DA TABELA, DEPOIS COMO VC VAI ADD NA TABELA OS COISAS, PELO NOME QUE TEM DENTRO DELA 
+PRODUTO, 
+NOME, 
+EMBALAGEM, 
+TAMANHO, 
+SABOR, 
+DEPOIS SE COLOCA VALUES -> PARA DAR UM VALOR E VALORES COM OS TIPOS DE CADA VALOR 
+
+
+VARIOS REGISTROS 
+
+
+INSERT INTO [TABELA DE VENDEDORES]
+    (MATRICULA, NOME, [PERCENTUAL COMISSAO])
+VALUES 
+    ('00235', 'Márcio Almeida Silva', 0.08),
+    ('00236', 'Cláudia Morais', 0.08);
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
+add infos do banco de dado, de outro banco
+
+INSERT INTO clientes
+(CPF,NOME,ENDERECO,BAIRRO,CIDADE,ESTADO,CEP,DATA_NASCIMENTO,IDADE,SEXO,LIMITE_CREDITO,VOLUME_COMPRA,PRIMEIRA_COMPRA)
+SELECT CPF, NOME, ENDERECO_1 AS ENDERECO, BAIRRO, CIDADE, ESTADO, CEP,DATA_DE_NASCIMENTO AS  DATA_NASCIMENTO, IDADE, SEXO,LIMITE_DE_CREDITO AS LIMITE_CREDITO, VOLUME_DE_COMPRA AS VOLUME_COMPRA,PRIMEIRA_COMPRA 
+ FROM sucos_vendas.tabela_de_clientes 
+ WHERE CPF NOT IN (SELECT CPF FROM clientes);
+
+so aperta com botão direito em wizard, se vc quiser importa ou exporta do banco e faz isso
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+COMMIT e ROLLBACK
+
+STAR TRANSACTION -> PARA INICIAR 
+
+SO PARA INSET UPDATE, DELETE
+
+ROLLBACK -> PARA VOLTA AS COISAS FEITA NO BANCO 
+
+COMMIT-> PARA CONFIRMA AS MUDANÇAS NO BANCO 
+
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+ALTERANDO INFOS NA TABELA 
+
+
+UPDATE tbproduto SET EMBALAGEM = 'Lata', PRECO_LISTA = 2.46
+WHERE PRODUTO = '544931';
+ 
+COMANDO UPADATE NOME DA TABELA, SET OQ VC VAI MUDAR, E WHERE PARA LIMITAR A TAL COISA QUE
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+deletando 
+
+delete from nomeda tabela where id = 1; 
+aqui para deleta algum coluna da tabela
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+ALTERANDO TABELA, ADD NOVA COLUNA OU EXCLUIDO
+
+ALTER TABLE NOME DA TABELA  ADD PRIMARY KEY (PRODUTO)
+altere a tabela nome da tabela add chave primarimaria(produto) 
+vc pode add , drop 
+add vc tem falar o tipo onde quer add 
+ou quer add algo novo 
+
+ex
+
+ALTER TABLE tbcliente ADD COLUMN (DATA_NASCIMENTO DATE); -> add nova coluna
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+add algo com data
+
+INSERT INTO tbcliente (
+CPF, 
+NOME, 
+ENDERECO1, 
+ENDERECO2, 
+BAIRRO, 
+CIDADE, 
+ESTADO, 
+CEP, 
+IDADE, 
+SEXO, 
+LIMITE_CREDITO, 
+VOLUME_COMPRA, 
+PRIMEIRA_COMPRA, 
+DATA_NASCIMENTO) VALUES (
+'00388934505', 
+'João da Silva', 
+'Rua projetada A número 10', 
+'', 
+'Vila Roman', 
+'CARATINGA', 
+'AM', 
+'2222222', 
+30, 
+'M', 
+10000.00, 
+2000, 
+0, 
+'1989-10-05');
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+cosultando
+
+SELECT * FROM tbcliente;-> consultando tudo que vc tem na tabela 
+==================================================================================================================================================================
+SELECT CPF, ENDERECO1, ENDERECO2, BAIRRO, CIDADE, ESTADO, CEP, DATA_NASCIMENTO, IDADE, SEXO, LIMITE_CREDITO, VOLUME_COMPRA, PRIMEIRA_COMPRA FROM tbcliente;
+consultando para coisas especificas que vc quer ver 
+================================================================================================================================================================
+	COM O AS VC MUDA NOME DA TABELA SO NAQUELA CONSULTA TIPO CPF AS C -> VAI MOSTRA NOME DA COLUNA COMO C 
+=================================================================================================================================================================
+SELECT * FROM tbproduto WHERE PRODUTO = '544931';
+
+SELECT * FROM tbcliente WHERE CIDADE = 'Rio de Janeiro';
+
+SELECT * FROM tbproduto WHERE SABOR = 'Cítricos';
+
+VC USA O WHERE -> PARA FILTA REGISTROS 
+===============================================================================================================
+MAIOR OU IGUAL 
+SELECT * FROM tbcliente;
+
+SELECT * FROM tbcliente WHERE IDADE = 22;
+
+SELECT * FROM tbcliente WHERE IDADE > 22;
+
+SELECT * FROM tbcliente WHERE IDADE < 22;
+
+SELECT * FROM tbcliente WHERE IDADE <= 22;
+
+SELECT * FROM tbcliente WHERE IDADE <> 22;
+
+SELECT * FROM tbcliente WHERE NOME >= 'Fernando Cavalcante';
+
+SELECT * FROM tbcliente WHERE NOME <> 'Fernando Cavalcante';
+
+SELECT * FROM tbproduto;
+
+SELECT * FROM tbproduto WHERE PRECO_LISTA > 16.008;
+
+SELECT * FROM tbproduto WHERE PRECO_LISTA < 16.008;
+
+SELECT * FROM tbproduto WHERE PRECO_LISTA <> 16.008;
+
+SELECT * FROM tbproduto WHERE PRECO_LISTA BETWEEN 16.007 AND 16.009;
+===============================================================================================================================================
+POR DATA 
+SELECT * FROM tbcliente;
+
+SELECT * FROM tbcliente WHERE DATA_NASCIMENTO = '1995-01-13';
+
+SELECT * FROM tbcliente WHERE DATA_NASCIMENTO > '1995-01-13';
+
+SELECT * FROM tbcliente WHERE DATA_NASCIMENTO <= '1995-01-13';
+
+SELECT * FROM tbcliente WHERE YEAR(DATA_NASCIMENTO) = 1995;
+
+SELECT * FROM tbcliente WHERE MONTH(DATA_NASCIMENTO) = 10;
+================================================================================================================================================
+FILTRO COMPOSTO 
+SELECT * FROM tbcliente WHERE (IDADE >= 18 AND IDADE <= 22 AND SEXO = 'M')
+ OR (cidade = 'Rio de Janeiro' OR BAIRRO = 'Jardins');
+----------------------------------------------------------------------------------------------------------------------------------------------
+
+Consulta condicional
+or = ou
+and = e
+not() = inverte resultado
+
+ex
+SELECT * FROM tabela_de_produtos WHERE SABOR = 'Manga';
+SELECT * FROM tabela_de_produtos WHERE SABOR = 'Manga' OR TAMANHO = '470 ml';
+SELECT * FROM tabela_de_produtos WHERE SABOR = 'Manga' AND TAMANHO = '470 ml';
+SELECT * FROM tabela_de_produtos WHERE NOT (SABOR = 'Manga' AND TAMANHO = '470 ml');
+SELECT * FROM tabela_de_produtos WHERE NOT (SABOR = 'Manga' OR TAMANHO = '470 ml');
+SELECT * FROM tabela_de_produtos WHERE SABOR = 'Manga' AND NOT (TAMANHO = '470 ml');
+SELECT * FROM tabela_de_produtos WHERE SABOR IN ('Laranja', 'Manga');
+SELECT * FROM tabela_de_produtos WHERE SABOR = 'Laranja' OR SABOR = 'Manga';
+SELECT * FROM tabela_de_clientes WHERE CIDADE IN ('Rio de Janeiro', 'São Paulo') AND IDADE >= 20;
+SELECT * FROM tabela_de_clientes WHERE CIDADE IN ('Rio de Janeiro', 'São Paulo') AND (IDADE >= 20 AND IDADE <= 22);
+SELECT DISTINCT A.CPF, A.NOME, B.CPF FROM tabela_de_clientes A
+LEFT JOIN notas_fiscais B ON A.CPF = B.CPF
+WHERE B.CPF IS NULL; -> IS NULL
+NOT IN -> so add oq não foi add no banco atual
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+LIKE -> SE VC TEM ALGO TEXTO OU CERTO NUMERO
+%MAÇA -> TUDO QUE TERMINA COM MAÇA 
+MAÇA% TUDO QUE COMEÇA COM MAÇA
+%MAÇA% -> EM QUAL QUER LUGAR TEM MAÇA
+SELECT * FROM tab WHERE campo LIKE '<condição>';
+SELECT * FROM tabela_de_produtos WHERE SABOR LIKE '%Maça%';
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+DISTINCT -> TUDO DESTINTO, NÃO REPETE NEM UM VALOR IGUAL
+
+SELECT DISTINCT * FROM tabela;
+
+SEM DISTINCT
+MAÇA - 1
+MAÇA - 1
+MAÇA - 3
+MAÇA - 1
+PERA - 1
+
+COM DISTINCT
+MAÇA - 1
+MAÇA - 3
+PERA - 1
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+LIMIT -> LIMITA A SAIDA DA COLUNA EM TABELA
+
+SELECT campos FROM tabela WHERE condicao LIMIT 5;
+
+SELECT * FROM tabela LIMIT 4;
+
+SELECT * FROM tabela LIMIT 2,3;-> VAI COMEÇA APARTIR DO 2 E 3 COLUNA VAI APARECER 
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ORDER BY -> VAI ORDENAR TABELA PELA CONDIÇÃO QUE VC QUER VAMOS FALAR QUE VAI ORDENA POR NOME VAI DE A-Z, SE VC QUISER CONTRARIO SO NO FINAL COLOCA DESC
+
+SELECT * FROM tab ORDER BY campo ASC
+
+
+SELECT * FROM tab ORDER BY campo desc 
+=============================================================================================================================================================
+USANDO FUNÇÃO MATEMATICA E AGRUPANDO
+
+SELECT X, SUM(Y) FROM tab GROUP BY X;
+SELECT X, MAX(Y) FROM tab GROUP BY X;
+SELECT X, MIN(Y) FROM tab GROUP BY X;
+SELECT X, AVG(Y) FROM tab GROUP BY X;
+SELECT SUM(Y) FROM tab;
+SELECT COUNT(Y) FROM tab;
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+HAVING -> que é um filtro que se aplica ao resultado de um agregação
+VC USA HAVING DEPOIS DE AGRUPAR E SOMAR OU QUALQUER OUTRA FUNÇÃO, COMO FOSSE UM WHERE SO QUE DEPOIS DE SOMAR
+
+SELECT X, SUM(Y) FROM tab GROUP BY X HAVING SUM(Y) >= 6;
+
+EX:
+
+X Y
+B 6
+X 8
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+CASE  -> CONDIÇÃO NO MYSQL
+FAZEMOS TAL COISA DEPENDENDO DO RESULTADO
+
+
+
+CASE
+    WHEN <condição1> THEN <Valor1>
+    WHEN <condição2> THEN <Valor2>
+    (...)
+    WHEN <condiçãoN> THEN <ValorN>
+    ELSE ValorELSE
+END
+
+EX
+
+SELECT X,
+CASE
+    WHEN Y>=8 AND Y<=10 THEN 'OTIMO'
+    WHEN Y>=7 AND Y<8 THEN 'BOM'
+    WHEN Y>5 AND Y<7 THEN 'MEDIO'
+    ELSE 'RUIM'
+END
+FROM tabela;
+
+EX COMPLEXO:
+
+
+SELECT EMBALAGEM,
+CASE 
+    WHEN PRECO_DE_LISTA >= 12 THEN 'PRODUTO CARO'
+    WHEN PRECO_DE_LISTA >= 7 AND PRECO_DE_LISTA < 12 THEN 'PRODUTO EM CONTA'
+    ELSE 'PRODUTO BARATO' 
+END AS STATUS_PRECO, AVG(PRECO_DE_LISTA) AS PRECO_MEDIO
+FROM tabela_de_produtos
+WHERE sabor = 'Manga'
+GROUP BY EMBALAGEM, 
+CASE 
+    WHEN PRECO_DE_LISTA >= 12 THEN 'PRODUTO CARO'
+    WHEN PRECO_DE_LISTA >= 7 AND PRECO_DE_LISTA < 12 THEN 'PRODUTO EM CONTA'
+    ELSE 'PRODUTO BARATO' 
+END 
+ORDER BY EMBALAGEM;
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+JOINs->UNIR UMA OU MAIS TABELA ATRAVES DE CAMPOS EM COMUM 
+TIPOS DE JOINs
+
+INNER JOIN-> AJUNTAR OS CAMPOS EM COMUNS
+
+SELECT A.NOME, B.HOBBY FROM 
+TABELA_ESQUERDA A
+INNER JOIN TABELA_DIREITA B
+ON A.IDENTIFICADOR = B.IDENTIFICADOR;
+
+
+LEFT JOIN-> VAI TRAZER TODO MUNDO DO LADO ESQUERDO, E LADO DIREITO QUE CORRESPONDE 
+SE NÃO TIVER CORRESPONDETE FICA NULL
+
+SELECT A.NOME, B.HOBBY FROM 
+TABELA_ESQUERDA A
+LEFT JOIN TABELA_DIREITA B
+ON A.IDENTIFICADOR = B.IDENTIFICADOR;
+
+
+LEFT RIGHT > VAI TRAZER TODO MUNDO DO LADO DIREITO E LADO ESQUERDO QUE CORRESPONDE 
+SE NÃO TIVER CORRESPONDETE FICA NULL
+
+
+SELECT A.NOME, B.HOBBY FROM 
+TABELA_ESQUERDA A
+RIGHT JOIN TABELA_DIREITA B
+ON A.IDENTIFICADOR = B.IDENTIFICADOR;
+
+
+
+FULL JOIN-> VAI TRAZER TODO MUNDO DA TABELA DIREITA E ESQUERDA
+QUEM NÃO TIVER CORRESPONDETE FICA NULL
+
+
+SELECT A.NOME, B.HOBBY FROM 
+TABELA_ESQUERDA A
+FULL JOIN TABELA_DIREITA B
+ON A.IDENTIFICADOR = B.IDENTIFICADOR;
+
+
+CROSS JOIN -> UNI TUDO COM TUDO
+SELECT A.NOME, B.HOBBY FROM
+TABELA_ESQUERDA A, TABELA-DIREITA B;
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+UNION, que é responsável por juntar duas consultas
+UNION ALL-> VAI APARECER OS DOIS
+SELECT DISTINCT BAIRRO FROM tabela_de_clientes;
+SELECT DISTINCT BAIRRO FROM tabela_de_vendedores;
+
+SELECT DISTINCT BAIRRO FROM tabela_de_clientes
+UNION
+SELECT DISTINCT BAIRRO FROM tabela_de_vendedores;
+
+SELECT DISTINCT BAIRRO FROM tabela_de_clientes
+UNION ALL
+SELECT DISTINCT BAIRRO FROM tabela_de_vendedores;
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+SUB CONSULTAS
+SELECT X, Y FROM tab1
+WHERE Y IN (SELECT Y FROM tab2);
+
+SELECT Z.X, Z.NEW_Y FROM (SELECT X, SUM(Y) as NEW_Y FROM tab1 GROUP BY X) Z WHERE Z.NEW_Y = 3;
+
+SUB CONSULTA SEMPRE DEPOIS DO FROM E COM BARRA
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+VISÃO
+
+
+
+
+
+
+SELECT X, SUM(Y) as NEW_Y FROM tab1 GROUP BY X;
+
+SELECT VW_VIEW.X, TAB3.W FROM VW_VIEW
+INNER JOIN TAB3 ON VW_VIEW.NEW_Y = TAB3.Y;
+
+EX
+SELECT X.EMBALAGEM, X.MAIOR_PRECO FROM
+(SELECT EMBALAGEM, MAX(PRECO_DE_LISTA) AS MAIOR_PRECO FROM tabela_de_produtos
+GROUP BY EMBALAGEM) X WHERE X.MAIOR_PRECO >= 10;
+
+
+
+CREATE VIEW 'VW_MAIORES_EMBALAGENS' AS
+SELECT EMBALAGEM, MAX(PRECO_DE_LISTA) AS MAIOR_PRECO FROM tabela_de_produtos
+GROUP BY EMBALAGEM;
+
+CREATE OR REPLACE VIEW 'VW_MAIORES_EMBALAGENS' AS
+SELECT EMBALAGEM, MAX(PRECO_DE_LISTA) AS MAIOR_PRECO FROM tabela_de_produtos
+GROUP BY EMBALAGEM
+
+SELECT X.EMBALAGEM, X.MAIOR_PRECO FROM
+vw_maiores_embalagens X WHERE X.MAIOR_PRECO >= 10;
+
+
+
+
+DROP 
+
+ DROP VIEW view_name.
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+FUNÇÃO MYSQL GERAL
+CONCAT()
+oncatena strings. Ou seja, aplicando CONCAT() sobre duas strings, é possível uni-las em uma única sequência de texto. Podemos juntar um número ilimitado de strings, separando-as com vírgula:
+SELECT CONCAT("SQL ", "Tutorial ", "is ", "fun!") AS ConcatenatedString; 
+
+LTRIM()
+Tira espaços à esquerda (left) de um texto. Trim, em português, significa "aparar" e é exatamente isso que a função faZ
+SELECT LTRIM("     SQL Tutorial") AS LeftTrimmedString;
+
+RTRIM()
+por outro lado, vai remover os espaços à direita (right) da string:
+SELECT RTRIM("SQL Tutorial     ") AS RightTrimmedString;
+
+TRIM() TIRA ESPAÇO
+SELECT TRIM('    SQL Tutorial    ') AS TrimmedString;
+
+
+LCASE() DEIXA TUDO 
+SELECT LCASE("SQL Tutorial is FUN!");
+
+
+LCASE() MINUSCULA
+SELECT LCASE("SQL Tutorial is FUN!");
+
+SELECT LOWER("SQL Tutorial is FUN!");
+
+
+UCASE()MIUSCULA
+SELECT UCASE("SQL Tutorial is FUN!");
+
+SELECT UPPER("SQL Tutorial is FUN!");
+
+
+
+SUBSTRING() TIRA PEDAÇOS DE UMA STRING 
+SELECT SUBSTRING("SQL Tutorial", 5, 3) AS ExtractString;
+
+
+SELECT LENGTH("SQL Tutorial") AS LengthOfString;-> TAMANHO DE UM STRING
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+FUNÇÃO DE DATAS
+
+
+SELECT ADDDATE("2017-06-15", INTERVAL 10 DAY);-> ADD DATA 
+
+SELECT ADDTIME("2017-06-15 09:34:21", "2"); -> ADD TIME
+
+SELECT CURDATE();-> Vai te trazer data atual 
+
+SELECT CURRENT_TIMESTAMP();-> mais detalhada 
+
+URRENT_TIME() retornará apenas as horas, sem a data. E a CURRENT_DATE() é equivalente à CURDATE(), que vimos anteriormente.
+
+SELECT DATEDIFF("2017-06-25", "2017-06-15");->informamos duas datas como parâmetros e recebemos como retorno o número de dias entre elas:
+
+SELECT DAYNAME("2017-06-15");
+SELECT MONTHNAME("2017-06-15");-> infoma em nome as datas 
+
+
+SELECT DAY("2017-06-15");
+SELECT MONTH("2017-06-15");-> retorna mes e ano 
+
+
+date_format(data_compra,'%Y-%m') -> FORMATA A DATA DO JEITO QUE VC QUER
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+FUNCÃO MATEMATICA
+
+As funções CEILING(), FLOOR() e ROUND() serão muito úteis para arredondar valores com muitas casas decimais:
+
+SELECT CEILING(12.33333232323) AS RESULTADO; -> ARREDONDA
+
+SELECT RAND() AS RESULTADO; -> NUMERO ALEATORIO 
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+DATE_FORMAT()
+%Y-> ANO 
+%y -> mostra em 2 digito
+%m-> mes com 2 digito 
+%d-> dia com 2 digito 
+Ademais, podemos acrescentar o dia da semana (com %W):
+Também temos a opção de adicionar o número da semana (com %U).
+
+
+
+SELECT CURRENT_TIMESTAMP() AS RESULTADO;-> Abriremos um novo script e começaremos com uma consulta simples, selecionando a data atual no formato timestamp:
+
+O retorno será um dado no formato de data. A título de exemplo, vamos tentar rodar uma função de texto com esse dado em formato de data:
+SELECT CONCAT('O dia de hoje é: ', CURRENT_TIMESTAMP()) AS RESULTADO;
+
+
+
+SELECT CONVERT(23.3, CHAR) AS RESULTADO;-> converte em char
+
+SELECT SUBSTRING(CONVERT(23.3, CHAR),1,1) AS RESULTADO;
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+SELECT X.CPF, X.NOME, X.MES_ANO, X.QUANTIDADE_VENDAS, X.QUANTIDADE_LIMITE,
+CASE 
+    WHEN (X.QUANTIDADE_LIMITE - X.QUANTIDADE_VENDAS) < 0 THEN 'INVÁLIDA'
+    ELSE 'VÁLIDA' 
+END AS STATUS_VENDA
+FROM (
+SELECT NF.CPF, TC.NOME, DATE_FORMAT(NF.DATA_VENDA, '%Y-%m') AS MES_ANO, 
+SUM(INF.QUANTIDADE) AS QUANTIDADE_VENDAS , 
+MAX(TC.VOLUME_DE_COMPRA) AS QUANTIDADE_LIMITE FROM NOTAS_FISCAIS NF
+INNER JOIN ITENS_NOTAS_FISCAIS INF
+ON NF.NUMERO = INF.NUMERO
+INNER JOIN TABELA_DE_CLIENTES TC 
+ON TC.CPF = NF.CPF
+GROUP BY NF.CPF, TC.NOME, DATE_FORMAT(NF.DATA_VENDA, '%Y-%m')) X;
+
+
+
+
+
+SELECT VENDA_SABOR.SABOR, VENDA_SABOR.ANO, VENDA_SABOR.QUANTIDADE,
+ROUND((VENDA_SABOR.QUANTIDADE/VENDA_TOTAL.QUANTIDADE) * 100, 2) AS PARTICIPACAO FROM 
+(SELECT TP.SABOR, YEAR(NF.DATA_VENDA) AS ANO, SUM(INF.QUANTIDADE) AS QUANTIDADE FROM 
+TABELA_DE_PRODUTOS TP 
+INNER JOIN ITENS_NOTAS_FISCAIS INF ON TP.CODIGO_DO_PRODUTO = INF.CODIGO_DO_PRODUTO
+INNER JOIN NOTAS_FISCAIS NF ON NF.NUMERO = INF.NUMERO
+WHERE YEAR(NF.DATA_VENDA) = 2016
+GROUP BY TP.SABOR, YEAR(NF.DATA_VENDA)) AS VENDA_SABOR
+INNER JOIN 
+(SELECT YEAR(NF.DATA_VENDA) AS ANO, SUM(INF.QUANTIDADE) AS QUANTIDADE FROM 
+TABELA_DE_PRODUTOS TP 
+INNER JOIN ITENS_NOTAS_FISCAIS INF ON TP.CODIGO_DO_PRODUTO = INF.CODIGO_DO_PRODUTO
+INNER JOIN NOTAS_FISCAIS NF ON NF.NUMERO = INF.NUMERO
+WHERE YEAR(NF.DATA_VENDA) = 2016
+GROUP BY YEAR(NF.DATA_VENDA)) AS VENDA_TOTAL
+ON VENDA_SABOR.ANO = VENDA_TOTAL.ANO
+ORDER BY VENDA_SABOR.QUANTIDADE DESC;
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Comandos DML: manipulação de dados com MySQL
+
+===============================================================================================================================================================================================
+MODELAGEM:
+===============================================================================================================================================================================================
+CRIANDO BANCO DE DADOS:
+
+
+tringger-> INSERTE
+
+DELIMITER //
+CREATE TRIGGER NOMEQUEVAVAIDAR_INSERT AFTER INSERT ON NOMEDATABELA FOR EACH ROW
+
+
+BEGIN
+
+
+
+END//-> ESSE FINAL TEM SER IGUAL DELIMITER
+
+
+
+
+
+DELIMITER//
+CREATE TRIGGER nome_do_trigger
+    BEFORE INSERT
+    ON nome_da_tabela FOR EACH ROW
+BEGIN
+-- codigo_a_ser_executado
+END//
+
+
+
+PARA DELETAR 
+DROP TRIGGER nome_do_trigger;
+
+
+
+
+-- Criação da tabela de auditoria de pedidos
+
+CREATE TABLE IF NOT EXISTS auditoria_pedidos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    tipo_operacao VARCHAR(10),
+    id_pedido INT,
+    data_registro DATETIME
+);
+
+-- Criação do trigger de auditoria
+DELIMITER //
+CREATE TRIGGER auditoria_pedidos_trigger AFTER INSERT ON pedidos
+FOR EACH ROW
+BEGIN
+    INSERT INTO auditoria_pedidos (tipo_operacao, id_pedido, data_registro)
+    VALUES ('Inserção', NEW.id_pedido, NOW());
+END;
+//
+CREATE TRIGGER auditoria_pedidos_trigger AFTER UPDATE ON pedidos
+FOR EACH ROW
+BEGIN
+    INSERT INTO auditoria_pedidos (tipo_operacao, id_pedido, data_registro)
+    VALUES ('Atualização', NEW.id_pedido, NOW());
+END;
+//
+CREATE TRIGGER auditoria_pedidos_trigger AFTER DELETE ON pedidos
+FOR EACH ROW
+BEGIN
+    INSERT INTO auditoria_pedidos (tipo_operacao, id_pedido, data_registro)
+    VALUES ('Exclusão', OLD.id_pedido, NOW());
+END;
+//
+DELIMITER ;
+
+
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+PROCEDURE
+
+
+CREANDO PROCEDURE:
+
+USE `sucos_vendas`;
+DROP procedure IF EXISTS `alo_mundo`;
+DELIMITER $$
+USE `sucos_vendas`$$
+CREATE PROCEDURE `alo_mundo` ()
+BEGIN
+select 'Alô Mundo !!!!';
+END$$
+DELIMITER ;
+
+-> LEMBRANDO QUANTO A VIEW E PROCEDURE, NO PROPRIO WORK TEM FORMA DE CRIA AUTOMATICAMENTE
+
+DEVE TER APENAS LETRA E NUMERO, 
+TAMANHO MAXIMO 64 CARACTRES 
+NOME UNICO
+CASE SENSITIVE
+
+PARA USAR ELA USA CALL NOME DE PROCEDURE
+
+call despesa_total;
+alias -> para facilitar entendimento
+
+
+PARA DROPA
+
+DROP PROCEDURE NOMEDELA
+
+
+PROCIDORE COM VARIAVEL
+
+
+USE `sucos_vendas`;
+DROP procedure IF EXISTS `exibe_variavel`;
+DELIMITER $$
+
+USE `sucos_vendas`$$
+CREATE PROCEDURE `exibe_variavel` ()
+BEGIN
+declare texto char(20) default 'Alô Mundo !!!!';
+SELECT texto;
+END$$
+DELIMITER ;
+
+
+mudar na procedure propria variavel
+
+USE `sucos_vendas`;
+DROP procedure IF EXISTS `exibe_variavel`;
+DELIMITER $$
+
+USE `sucos_vendas`$$
+CREATE PROCEDURE `exibe_variavel` ()
+BEGIN
+declare texto char(20) default 'Alô Mundo !!!!';
+SELECT texto;
+SET TEXTO = 'MODIFICADO'
+SELECT texto
+END$$
+DELIMITER ;
+
+
+
+====================================================================================================================================================================================================================================
+EXMPLOS: 
+ADD COLOCANDO SELECT
+
+USE `sucos_vendas`;
+DROP procedure IF EXISTS `manipulacao_dados`;
+DELIMITER $$
+
+USE `sucos_vendas`$$
+CREATE PROCEDURE `manipulacao_dados` ()
+BEGIN
+INSERT INTO tabela_de_produtos (CODIGO_DO_PRODUTO,NOME_DO_PRODUTO,SABOR,TAMANHO,EMBALAGEM,PRECO_DE_LISTA)
+     VALUES ('2001001','Sabor da Serra 700 ml - Manga','Manga','700 ml','Garrafa',7.50),
+         ('2001000','Sabor da Serra  700 ml - Melão','Melão','700 ml','Garrafa',7.50),
+         ('2001002','Sabor da Serra  700 ml - Graviola','Graviola','700 ml','Garrafa',7.50),
+         ('2001003','Sabor da Serra  700 ml - Tangerina','Tangerina','700 ml','Garrafa',7.50),
+         ('2001004','Sabor da Serra  700 ml - Abacate','Abacate','700 ml','Garrafa',7.50),
+         ('2001005','Sabor da Serra  700 ml - Açai','Açai','700 ml','Garrafa',7.50),
+         ('2001006','Sabor da Serra  1 Litro - Manga','Manga','1 Litro','Garrafa',7.50),
+         ('2001007','Sabor da Serra  1 Litro - Melão','Melão','1 Litro','Garrafa',7.50),
+         ('2001008','Sabor da Serra  1 Litro - Graviola','Graviola','1 Litro','Garrafa',7.50),
+         ('2001009','Sabor da Serra  1 Litro - Tangerina','Tangerina','1 Litro','Garrafa',7.50),
+         ('2001010','Sabor da Serra  1 Litro - Abacate','Abacate','1 Litro','Garrafa',7.50),
+         ('2001011','Sabor da Serra  1 Litro - Açai','Açai','1 Litro','Garrafa',7.50);
+
+         SELECT * FROM tabela_de_produtos WHERE NOME_DO_PRODUTO LIKE 'Sabor da Serra%';
+         UPDATE tabela_de_produtos SET PRECO_DE_LISTA = 8 WHERE NOME_DO_PRODUTO LIKE 'Sabor da Serra%';
+
+         SELECT * FROM tabela_de_produtos WHERE NOME_DO_PRODUTO LIKE 'Sabor da Serra%';
+         DELETE FROM tabela_de_produtos WHERE NOME_DO_PRODUTO LIKE 'Sabor da Serra%';
+
+         SELECT * FROM tabela_de_produtos WHERE NOME_DO_PRODUTO LIKE 'Sabor da Serra%';
+END$$
+DELIMITER ;
+
+INCERINDO NOVAS COISAS 
+
+
+USE `sucos_vendas`;
+DROP procedure IF EXISTS `inclui_novo_produto`;
+DELIMITER $$
+
+USE `sucos_vendas`$$
+CREATE PROCEDURE `inclui_novo_produto` ()
+BEGIN
+DECLARE vCodigo varchar(50) DEFAULT '3000001';
+DECLARE vNome varchar(50) DEFAULT 'Sabor do Mar 700 ml - Manga';
+DECLARE vSabor varchar(50) DEFAULT 'Manga';
+DECLARE vTamanho varchar(50) DEFAULT '700 ml';
+DECLARE vEmbalagem varchar(50) DEFAULT 'Garrafa';
+DECLARE vPreco DECIMAL(10,2) DEFAULT 9.25;
+INSERT INTO tabela_de_produtos
+(CODIGO_DO_PRODUTO,NOME_DO_PRODUTO,SABOR,TAMANHO,EMBALAGEM,PRECO_DE_LISTA)
+     VALUES (vCodigo,
+     vNome,
+     vSabor,
+     vTamanho,
+     vEmbalagem,
+     vPreco);
+END$$
+DELIMITER ;
+
+AGORA COM PARAMETROS 
+CREATE PROCEDURE `Reajuste_Comissao` (vPercent FLOAT)
+BEGIN
+UPDATE tabela_de_vendedores SET percentual_comissao = percentual_comissao * (1 + vPercent);
+END
+
+
+
+USE `sucos_vendas`;
+DROP procedure IF EXISTS `inclui_novo_produto_parametro`;
+DELIMITER $$
+
+USE `sucos_vendas`$$
+CREATE PROCEDURE `inclui_novo_produto_parametro`(vCodigo varchar(50),
+vNome varchar(50), vSabor varchar(50), vTamanho varchar(50),
+vEmbalagem varchar(50), vPreco DECIMAL(10,2))
+BEGIN
+INSERT INTO tabela_de_produtos
+(CODIGO_DO_PRODUTO,NOME_DO_PRODUTO,SABOR,TAMANHO,EMBALAGEM,PRECO_DE_LISTA)
+     VALUES (vCodigo,
+     vNome,
+     vSabor,
+     vTamanho,
+     vEmbalagem,
+     vPreco);
+END$$
+DELIMITER ;
+
+
+
+ALTERANDO MENSAGEM DE ERRO NO PROCIDORE 
+
+
+USE `sucos_vendas`;
+DROP procedure IF EXISTS `inclui_novo_produto_parametro_2`;
+DELIMITER $$
+
+USE `sucos_vendas`$$
+CREATE PROCEDURE `inclui_novo_produto_parametro_2`(vCodigo varchar(50),
+vNome varchar(50), vSabor varchar(50), vTamanho varchar(50),
+vEmbalagem varchar(50), vPreco DECIMAL(10,2))
+BEGIN
+DECLARE mensagem VARCHAR(40);
+DECLARE EXIT HANDLER FOR 1062
+BEGIN
+   SET mensagem = 'Problema de Chave Primária !!!';
+   SELECT mensagem;
+END;
+
+INSERT INTO tabela_de_produtos
+(CODIGO_DO_PRODUTO,NOME_DO_PRODUTO,SABOR,TAMANHO,EMBALAGEM,PRECO_DE_LISTA)
+     VALUES (vCodigo,
+     vNome,
+     vSabor,
+     vTamanho,
+     vEmbalagem,
+     vPreco);
+SET mensagem = 'Produto incluido com sucesso !!!';
+SELECT mensagem;
+END$$
+DELIMITER ;
+
+DECLARE EXIT HANDLER FOR -> PARTE IMPORTANTE 
+
+
+
+PEGANDO VALOR DE UMA TABELA PARA ADD OUTRA TAELA 
+
+CREATE PROCEDURE `Quantidade_Notas`()
+BEGIN
+DECLARE NUMNOTAS INT;
+SELECT COUNT(*) INTO NUMNOTAS  FROM NOTAS_FISCAIS WHERE DATA_VENDA = '20170101';
+SELECT NUMNOTAS;
+END
+
+
+
+
+
+EX2:
+USE `sucos_vendas`;
+DROP procedure IF EXISTS `acha_sabor_produto`;
+DELIMITER $$
+
+USE `sucos_vendas`$$
+CREATE PROCEDURE `acha_sabor_produto`(vProduto VARCHAR(50))
+BEGIN
+   DECLARE vSabor VARCHAR(50);
+   SELECT SABOR INTO vSabor FROM tabela_de_produtos WHERE codigo_do_produto = vProduto;
+   SELECT vSabor;
+END$$
+DELIMITER ;
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+CONTROLE DE FLUXO PROCEDURE:
+
+if else: simples
+
+CREATE PROCEDURE `Testa_Numero_Notas` (DATANOTA date)
+BEGIN
+    DECLARE NUMNOTAS INT;
+    SELECT COUNT(*) INTO NUMNOTAS FROM NOTAS_FISCAIS WHERE DATA_VENDA = DATANOTA;
+    IF NUMNOTAS > 70 THEN
+        SELECT 'Muita Nota', NUMNOTAS;
+    ELSE
+        SELECT 'Pouca Nota', NUMNOTAS;
+    END IF;
+END
+=============================================================================================================================================================================
+USE `sucos_vendas`;
+DROP procedure IF EXISTS `cliente_novo_velho`;
+DELIMITER $$
+
+USE `sucos_vendas`$$
+CREATE PROCEDURE `cliente_novo_velho`(vCPF VARCHAR(20))
+BEGIN
+   DECLARE vResultado VARCHAR(20);
+   DECLARE vDataNascimento DATE;
+   SELECT DATA_DE_NASCIMENTO INTO vDataNascimento FROM
+   tabela_de_clientes WHERE CPF = vCPF;
+   IF vDataNascimento < '20000101' THEN
+      SET vResultado = 'CLIENTE VELHO';
+   ELSE
+      SET vResultado = 'CLIENTE NOVO';
+   END IF;
+   SELECT vResultado;
+END$$
+DELIMITER ;
+===============================================================================================================================================================================================
+
+if else - > composto 
+
+
+CREATE PROCEDURE `Comparativo_Vendas`(DataInicial DATE, DataFinal DATE)
+BEGIN
+DECLARE FaturamentoInicial FLOAT;
+DECLARE FaturamentoFinal FLOAT;
+DECLARE Variacao float;
+SELECT SUM(B.QUANTIDADE * B.PRECO) INTO FaturamentoInicial FROM 
+NOTAS_FISCAIS A INNER JOIN ITENS_NOTAS_FISCAIS B
+ON A.NUMERO = B.NUMERO
+WHERE A.DATA_VENDA = DataInicial;
+SELECT SUM(B.QUANTIDADE * B.PRECO) INTO FaturamentoFinal FROM 
+NOTAS_FISCAIS A INNER JOIN ITENS_NOTAS_FISCAIS B
+ON A.NUMERO = B.NUMERO
+WHERE A.DATA_VENDA = DataFinal ;
+SET Variacao = ((FaturamentoFinal / FaturamentoInicial) -1) * 100;
+IF Variacao > 10 THEN
+SELECT 'Verde';
+ELSEIF Variacao >= -10 AND Variacao <= 10 THEN
+SELECT 'Amarelo';
+ELSE
+SELECT 'Vermelho';
+END IF;   
+
+END
+=======================================================================================================================================================================================================================================
+USE `sucos_vendas`;
+DROP procedure IF EXISTS `acha_status_preco_2`;
+DELIMITER $$
+
+USE `sucos_vendas`$$
+CREATE PROCEDURE `acha_status_preco_2` (vProduto VARCHAR(50))
+BEGIN
+   DECLARE vPreco FLOAT;
+   DECLARE vMensagem VARCHAR(30);
+   SELECT PRECO_DE_LISTA INTO vPreco FROM tabela_de_produtos
+   WHERE codigo_do_produto = vProduto;
+   IF vPreco >= 12 THEN
+      SET vMensagem = 'PRODUTO CARO.';
+   ELSEIF vPreco >= 7  AND vPreco < 12 THEN
+      SET vMensagem = 'PRODUTO EM CONTA.';
+   ELSE
+      SET vMensagem = 'PRODUTO BARATO.';
+   END IF;
+   SELECT vMensagem;
+END$$
+DELIMITER ;
+===================================================================================================================================================================================================================================
+
+
+CASE 
+
+USE `sucos_vendas`;
+DROP procedure IF EXISTS `acha_tipo_sabor`;
+DELIMITER $$
+
+USE `sucos_vendas`$$
+CREATE PROCEDURE `acha_tipo_sabor`(vProduto VARCHAR(50))
+BEGIN
+  DECLARE vSabor VARCHAR(50);
+  SELECT SABOR INTO vSabor FROM tabela_de_Produtos
+  WHERE codigo_do_produto = vProduto;
+  CASE vSabor
+  WHEN 'Lima/Limão' THEN SELECT 'Cítrico';
+  WHEN 'Laranja' THEN SELECT 'Cítrico';
+  WHEN 'Morango/Limão' THEN SELECT 'Cítrico';
+  WHEN 'Uva' THEN SELECT 'Neutro';
+  WHEN 'Morango' THEN SELECT 'Neutro';
+  ELSE SELECT 'Ácidos';
+  END CASE;
+END$$
+DELIMITER ;
+==============================================================================================================================================================================================================================================
+
+
+COM Mensagem de erro 
+
+
+USE `sucos_vendas`;
+DROP procedure IF EXISTS `acha_tipo_sabor_erro`;
+DELIMITER $$
+
+USE `sucos_vendas`$$
+CREATE  PROCEDURE `acha_tipo_sabor_erro`(vProduto VARCHAR(50))
+BEGIN
+  DECLARE vSabor VARCHAR(50);
+  DECLARE msgErro VARCHAR(30);
+  DECLARE CONTINUE HANDLER FOR 1339 SET msgErro = 'O case não está completo';
+  SELECT SABOR INTO vSabor FROM tabela_de_Produtos
+  WHERE codigo_do_produto = vProduto;
+  CASE vSabor
+  WHEN 'Lima/Limão' THEN SELECT 'Cítrico';
+  WHEN 'Laranja' THEN SELECT 'Cítrico';
+  WHEN 'Morango/Limão' THEN SELECT 'Cítrico';
+  WHEN 'Uva' THEN SELECT 'Neutro';
+  WHEN 'Morango' THEN SELECT 'Neutro';
+  END CASE;
+  SELECT msgErro;
+END$$
+DELIMITER ;
+===========================================================================================================================================================================================
+outros ex: 
+USE `sucos_vendas`;
+DROP procedure IF EXISTS `acha_status_preco_case`;
+DELIMITER $$
+
+USE `sucos_vendas`$$
+CREATE PROCEDURE `acha_status_preco_case`(vProduto VARCHAR(50))
+BEGIN
+    DECLARE vPreco FLOAT;
+    DECLARE vMensagem VARCHAR(30);
+    SELECT PRECO_DE_LISTA INTO vPreco FROM tabela_de_produtos
+    WHERE codigo_do_produto = vProduto;
+    CASE
+    WHEN vPreco >= 12 THEN SET vMensagem = 'PRODUTO CARO.';
+    WHEN vPreco >= 7 AND vPreco < 12 THEN  SET vMensagem = 'PRODUTO EM CONTA.';
+    WHEN vPreco < 7 THEN SET vMensagem = 'PRODUTO BARATO';
+    END CASE;
+    SELECT vMensagem;
+END$$
+DELIMITER ;
+=====================================================================================================================================================================================================================
+CREATE PROCEDURE `Comparativo_Vendas_Case_Cond`(DataInicial DATE, DataFinal DATE)
+BEGIN
+DECLARE FaturamentoInicial FLOAT;
+DECLARE FaturamentoFinal FLOAT;
+DECLARE Variacao float;
+SELECT SUM(B.QUANTIDADE * B.PRECO) INTO FaturamentoInicial FROM 
+NOTAS_FISCAIS A INNER JOIN ITENS_NOTAS_FISCAIS B
+ON A.NUMERO = B.NUMERO
+WHERE A.DATA_VENDA = DataInicial;
+SELECT SUM(B.QUANTIDADE * B.PRECO) INTO FaturamentoFinal FROM 
+NOTAS_FISCAIS A INNER JOIN ITENS_NOTAS_FISCAIS B
+ON A.NUMERO = B.NUMERO
+WHERE A.DATA_VENDA = DataFinal ;
+SET Variacao = ((FaturamentoFinal / FaturamentoInicial) -1) * 100; 
+CASE
+WHEN Variacao > 10 THEN SELECT 'Verde';
+WHEN Variacao > -10 AND Variacao < 10 THEN  SELECT 'Amarelo';
+WHEN Variacao <= -10 THEN SELECT 'Vermelho';
+END CASE;
+END
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+loop:
+USE `sucos_vendas`;
+DROP procedure IF EXISTS `looping_while`;
+DELIMITER $$
+
+USE `sucos_vendas`$$
+CREATE PROCEDURE `looping_while`(vNumInicial INT, vNumFinal INT)
+BEGIN
+   DECLARE vContador INT;
+   DELETE FROM TAB_LOOPING;
+   SET vContador = vNumInicial;
+   WHILE vContador <= vNumFinal
+   DO
+      INSERT INTO TAB_LOOPING (ID) VALUES (vContador);
+      SET vContador = vContador + 1;
+   END WHILE;
+   SELECT * FROM TAB_LOOPING;
+END$$
+DELIMITER ;
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+cursor procedures
+
+
+USE sucos_vendas;
+
+DROP procedure IF EXISTS cursor_primeiro_contato;
+
+DELIMITER $$
+
+USE sucos_vendas$$
+
+CREATE PROCEDURE `cursor_primeiro_contato` ()
+
+BEGIN
+  DECLARE vNome VARCHAR(50);
+  DECLARE c CURSOR FOR SELECT NOME FROM tabela_de_clientes limit 4;
+  OPEN c;
+  FETCH c INTO vNome;
+  SELECT vNome;
+  FETCH c INTO vNome;
+  SELECT vNome;
+  FETCH c INTO vNome;
+  SELECT vNome;
+  FETCH c INTO vNome;
+  SELECT vNome;
+  CLOSE c;
+END$$
+DELIMITER ;
+
+=====================================================================================================================================================================================================================================
+loop com curso
+
+USE sucos_vendas;
+
+DROP procedure IF EXISTS cursor_looping;
+
+
+DELIMITER $$
+
+USE `sucos_vendas`$$
+
+CREATE PROCEDURE `cursor_looping` ()
+
+BEGIN
+
+   DECLARE fim_do_cursor INT DEFAULT 0;
+
+   DECLARE vNome VARCHAR(50);
+
+   DECLARE c CURSOR FOR SELECT NOME FROM tabela_de_clientes;
+
+   DECLARE CONTINUE HANDLER FOR NOT FOUND SET fim_do_cursor = 1;
+
+   OPEN c;
+
+   WHILE fim_do_cursor = 0
+   DO
+       FETCH c INTO vNome;
+       IF fim_do_cursor = 0 THEN
+          SELECT vNome;
+       END IF;
+   END WHILE;
+
+   CLOSE c;
+
+END$$
+
+DELIMITER ;
+
+===========================================================================================================================================================================================================================================
+cruso em loop com mutiplas coisas 
+
+
+USE sucos_vendas;
+
+DROP procedure IF EXISTS looping_cursor_multiplas_colunas;
+
+
+DELIMITER $$
+
+USE sucos_vendas$$
+
+CREATE PROCEDURE `looping_cursor_multiplas_colunas` ()
+
+BEGIN
+
+  DECLARE fim_do_cursor INT DEFAULT 0;
+
+  DECLARE vCidade, vEstado, vCep VARCHAR(50);
+
+  DECLARE vNome, vEndereco VARCHAR(150);
+
+  DECLARE c CURSOR FOR
+
+  SELECT nome, endereco_1, cidade, estado, cep FROM tabela_de_clientes;
+
+  DECLARE CONTINUE HANDLER FOR NOT FOUND SET fim_do_cursor = 1;
+
+  OPEN c;
+
+  WHILE fim_do_cursor = 0
+
+  DO
+
+     FETCH c INTO vNome, vEndereco, vCidade, vEstado, vCep;
+
+     IF fim_do_cursor = 0 THEN
+
+        SELECT CONCAT(vNome, ' Endereço: ',
+
+        vEndereco, ', ', vCidade , ' - ', vEstado, ' CEP: ' , vCep);
+
+     END IF;
+
+  END WHILE;
+
+  CLOSE c;
+
+END$$
+
+DELIMITER ;
+====================================================================================================================================================================================================================================
+criando função 
+SET GLOBAL log_bin_trust_function_creators = 1;
+USE sucos_vendas;
+
+DROP function IF EXISTS f_acha_tipo_sabor;
+
+
+DELIMITER $$
+
+USE `sucos_vendas`$$
+
+CREATE FUNCTION `f_acha_tipo_sabor`(vSabor VARCHAR(50)) RETURNS varchar(20) CHARSET utf8mb4
+
+BEGIN
+
+  DECLARE vRetorno VARCHAR(20) default "";
+
+  CASE vSabor
+
+  WHEN 'Lima/Limão' THEN SET vRetorno = 'Cítrico';
+
+  WHEN 'Laranja' THEN SET vRetorno = 'Cítrico';
+
+  WHEN 'Morango/Limão' THEN SET vRetorno = 'Cítrico';
+
+  WHEN 'Uva' THEN SET vRetorno = 'Neutro';
+
+  WHEN 'Morango' THEN SET vRetorno = 'Neutro';
+
+  ELSE SET vRetorno = 'Ácidos';
+
+  END CASE;
+
+  RETURN vRetorno;
+
+END$$
+
+
+DELIMITER ;
+===========================================================================================================================================================================================================
+problemas praticos na vida real 
+
+
+
+
+
+CREATE PROCEDURE `Tabela_Numeros`()
+BEGIN
+DECLARE CONTADOR INT;
+DECLARE CONTMAXIMO INT;
+SET CONTADOR = 1;
+SET CONTMAXIMO = 100;
+DELETE FROM TABELA_ALEATORIOS;
+WHILE CONTADOR <= CONTMAXIMO
+DO
+INSERT INTO TABELA_ALEATORIOS (NUMERO) VALUES (f_numero_aleatorio(0,1000));
+SET CONTADOR = CONTADOR + 1;
+END WHILE;
+SELECT * FROM TABELA_ALEATORIOS;
+END
+
+
+
+CREATE FUNCTION `f_produto_aleatorio`() RETURNS varchar(10) BEGIN
+DECLARE vRetorno VARCHAR(10);
+DECLARE num_max_tabela INT;
+DECLARE num_aleatorio INT;
+SELECT COUNT(*) INTO num_max_tabela FROM tabela_de_produtos;
+SET num_aleatorio = f_numero_aleatorio(1, num_max_tabela);
+SET num_aleatorio = num_aleatorio - 1;
+SELECT CODIGO_DO_PRODUTO INTO vRetorno FROM tabela_de_produtos
+LIMIT num_aleatorio, 1;
+RETURN vRetorno;
+END
+
+
+
+
+CREATE FUNCTION `f_vendedor_aleatorio`() RETURNS varchar(5) BEGIN
+DECLARE vRetorno VARCHAR(5);
+DECLARE num_max_tabela INT;
+DECLARE num_aleatorio INT;
+SELECT COUNT(*) INTO num_max_tabela FROM tabela_de_vendedores;
+SET num_aleatorio = f_numero_aleatorio(1, num_max_tabela);
+SET num_aleatorio = num_aleatorio - 1;
+SELECT MATRICULA INTO vRetorno FROM tabela_de_vendedores
+LIMIT num_aleatorio, 1;
+RETURN vRetorno;
+END
+
+
+
+USE sucos_vendas;
+
+DROP procedure IF EXISTS p_inserir_venda;
+
+
+DELIMITER $$
+
+USE sucos_vendas$$
+
+CREATE PROCEDURE p_inserir_venda(vData DATE, max_itens INT,
+
+max_quantidade INT)
+
+BEGIN
+
+DECLARE vCliente VARCHAR(11);
+
+DECLARE vProduto VARCHAR(10);
+
+DECLARE vVendedor VARCHAR(5);
+
+DECLARE vQuantidade INT;
+
+DECLARE vPreco FLOAT;
+
+DECLARE vItens INT;
+
+DECLARE vNumeroNota INT;
+
+DECLARE vContador INT DEFAULT 1;
+
+SELECT MAX(numero) + 1 INTO vNumeroNota from notas_fiscais;
+
+SET vCliente = f_cliente_aleatorio();
+
+SET vVendedor = f_vendedor_aleatorio();
+
+INSERT INTO notas_fiscais (CPF, MATRICULA, DATA_VENDA, NUMERO, IMPOSTO)
+
+VALUES (vCliente, vVendedor, vData, vNumeroNota, 0.18);
+
+SET vItens = f_numero_aleatorio(1, max_itens);
+
+WHILE vContador <= vItens
+
+DO
+
+   SET vProduto = f_produto_aleatorio();
+
+   SET vQuantidade = f_numero_aleatorio(10, max_quantidade);
+
+   SELECT PRECO_DE_LISTA INTO vPreco FROM tabela_de_produtos
+
+   WHERE CODIGO_DO_PRODUTO = vProduto;
+
+   INSERT INTO itens_notas_fiscais (NUMERO, CODIGO_DO_PRODUTO,
+
+   QUANTIDADE, PRECO) VALUES (vNumeroNota, vProduto, vQuantidade, vPreco);
+
+   SET vContador = vContador + 1;
+
+END WHILE;
+
+END$$
+
+DELIMITER ;
+
+
+
+USE sucos_vendas;
+
+DROP procedure IF EXISTS p_inserir_venda;
+
+
+DELIMITER $$
+
+USE sucos_vendas$$
+
+CREATE DEFINER=root@localhost PROCEDURE p_inserir_venda(vData DATE, max_itens INT,
+
+max_quantidade INT)
+
+BEGIN
+
+DECLARE vCliente VARCHAR(11);
+
+DECLARE vProduto VARCHAR(10);
+
+DECLARE vVendedor VARCHAR(5);
+
+DECLARE vQuantidade INT;
+
+DECLARE vPreco FLOAT;
+
+DECLARE vItens INT;
+
+DECLARE vNumeroNota INT;
+
+DECLARE vContador INT DEFAULT 1;
+
+DECLARE vNumItensNota INT;
+
+SELECT MAX(numero) + 1 INTO vNumeroNota from notas_fiscais;
+
+SET vCliente = f_cliente_aleatorio();
+
+SET vVendedor = f_vendedor_aleatorio();
+
+INSERT INTO notas_fiscais (CPF, MATRICULA, DATA_VENDA, NUMERO, IMPOSTO)
+
+VALUES (vCliente, vVendedor, vData, vNumeroNota, 0.18);
+
+SET vItens = f_numero_aleatorio(1, max_itens);
+
+WHILE vContador <= vItens
+
+DO
+
+   SET vProduto = f_produto_aleatorio();
+
+   SELECT COUNT(*) INTO vNumItensNota FROM itens_notas_fiscais
+
+   WHERE NUMERO = vNumeroNota AND CODIGO_DO_PRODUTO = vProduto;
+
+   IF vNumItensNota = 0 THEN
+
+      SET vQuantidade = f_numero_aleatorio(10, max_quantidade);
+
+      SELECT PRECO_DE_LISTA INTO vPreco FROM tabela_de_produtos
+
+      WHERE CODIGO_DO_PRODUTO = vProduto;
+
+      INSERT INTO itens_notas_fiscais (NUMERO, CODIGO_DO_PRODUTO,
+
+      QUANTIDADE, PRECO) VALUES (vNumeroNota, vProduto, vQuantidade, vPreco);
+
+   END IF;
+
+   SET vContador = vContador + 1;
+
+END WHILE;
+
+END$$
+
+
+DELIMITER ;
+
+
+==================================================================================================================================================================================
+usando o triggers com procigores 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
